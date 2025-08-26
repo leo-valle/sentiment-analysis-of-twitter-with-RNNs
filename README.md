@@ -1,69 +1,79 @@
-# Análise de Sentimentos e Emoções em Tweets com Redes Neuronais Recorrentes
+# Sentiment and Emotion Analysis in Tweets with Recurrent Neural Networks
 
-## Visão Geral do Projeto
+## Project Overview
 
-Este projeto explora o campo do Processamento de Linguagem Natural (PLN) para classificar sentimentos (positivo, negativo, neutro) e emoções em tweets relacionados com a marca Dell. Foram implementadas e comparadas quatro arquiteturas diferentes de Redes Neuronais Recorrentes (RNNs) para avaliar a sua eficácia nesta tarefa: **LSTM**, **GRU**, **SimpleRNN** e **LSTM Bidirecional**.
+This project explores the field of Natural Language Processing (NLP) to classify sentiment (positive, negative, neutral) and emotion in tweets related to the Dell brand. Four distinct Recurrent Neural Network (RNN) architectures were implemented and compared to evaluate their effectiveness on this task: **LSTM**, **GRU**, **SimpleRNN**, and **Bidirectional LSTM**.
 
-O objetivo é demonstrar um pipeline completo de PLN, desde a limpeza e pré-processamento dos dados até ao treino e avaliação de modelos de deep learning.
+The objective is to demonstrate a complete NLP pipeline, from data cleaning and preprocessing to the training and evaluation of deep learning models.
+
+---
 
 ## Dataset
 
-O dataset utilizado é o `sentiment-emotion-labelled_Dell_tweets.csv`, que contém uma coleção de tweets sobre a Dell, cada um rotulado com um sentimento e uma emoção.
+The dataset used is `sentiment-emotion-labelled_Dell_tweets.csv`, which contains a collection of tweets about Dell, each labeled with a specific sentiment and emotion.
 
-## Metodologia
+---
 
-O fluxo de trabalho do projeto foi estruturado nas seguintes etapas:
+## Methodology
 
-1.  **Carregamento e Limpeza dos Dados:**
-    * Os dados foram carregados a partir do ficheiro CSV.
-    * Foi aplicada uma função de pré-processamento para limpar o texto de cada tweet, que incluiu:
-        * Conversão para minúsculas.
-        * Remoção de URLs, menções (@), hashtags (#) e caracteres não alfabéticos.
-        * Remoção de *stopwords* (palavras comuns como "a", "o", "de") em inglês.
+The project's workflow was structured into the following steps:
 
-2.  **Balanceamento do Dataset:**
-    * A análise inicial mostrou que as classes de sentimento estavam desbalanceadas (ex: muito mais tweets negativos do que neutros).
-    * Para evitar que o modelo ficasse enviesado para a classe maioritária, foi criado um conjunto de treino balanceado, amostrando aleatoriamente **7.000 exemplos** de cada uma das três classes de sentimento (positivo, negativo e neutro).
+1.  **Data Loading and Cleaning:**
+    * The data was loaded from the CSV file.
+    * A preprocessing function was applied to clean the text of each tweet, which included:
+        * Conversion to lowercase.
+        * Removal of URLs, mentions (@), hashtags (#), and non-alphabetic characters.
+        * Removal of English stopwords (common words like "the," "a," "of").
 
-3.  **Divisão dos Dados:**
-    * O conjunto balanceado de 21.000 tweets foi dividido em **80% para treino** (16.800 tweets) e **20% para validação** (4.200 tweets).
-    * O conjunto de teste final foi formado pela junção do conjunto de validação com os dados restantes do dataset original que não foram usados para o treino, garantindo uma avaliação robusta em dados não vistos e desbalanceados.
+2.  **Dataset Balancing:**
+    * Initial analysis showed that the sentiment classes were imbalanced (e.g., significantly more negative tweets than neutral ones).
+    * To prevent the model from being biased towards the majority class, a balanced training set was created by randomly sampling **7,000 examples** from each of the three sentiment classes (positive, negative, and neutral).
 
-4.  **Tokenização e Padding:**
-    * O texto foi convertido em sequências numéricas através de um `Tokenizer`, considerando um vocabulário máximo de **1.000 palavras** mais frequentes.
-    * As sequências foram padronizadas para um comprimento máximo de **144 tokens** (o limite de caracteres de um tweet) através de *padding*, para que todas as entradas tivessem o mesmo tamanho.
+3.  **Data Splitting:**
+    * The balanced set of 21,000 tweets was split into **80% for training** (16,800 tweets) and **20% for validation** (4,200 tweets).
+    * The final test set was formed by combining the validation set with the remaining data from the original dataset that was not used for training, ensuring a robust evaluation on unseen, imbalanced data.
 
-5.  **Codificação dos Rótulos:**
-    * Os rótulos de sentimento (negativo, neutro, positivo) foram convertidos para um formato numérico e, em seguida, para o formato *one-hot encoding*, adequado para a função de perda `categorical_crossentropy`.
+4.  **Tokenization and Padding:**
+    * The text was converted into numerical sequences using a `Tokenizer`, considering a maximum vocabulary of the **1,000 most frequent words**.
+    * The sequences were standardized to a maximum length of **144 tokens** (the character limit of a tweet) through padding, so that all inputs had the same size.
 
-## Arquiteturas dos Modelos
+5.  **Label Encoding:**
+    * The sentiment labels (negative, neutral, positive) were converted to a numerical format and subsequently into a *one-hot encoding* format, which is suitable for the `categorical_crossentropy` loss function.
 
-Foram treinados e avaliados quatro modelos de RNN, todos com uma arquitetura base semelhante, variando apenas a camada recorrente:
+---
 
-1.  **LSTM (Long Short-Term Memory):** Eficaz para aprender dependências de longo prazo.
-2.  **GRU (Gated Recurrent Unit):** Uma versão mais simples e computacionalmente mais eficiente que a LSTM.
-3.  **SimpleRNN:** A arquitetura de RNN mais básica.
-4.  **Bidirectional LSTM:** Processa a sequência de texto em ambas as direções (da esquerda para a direita e da direita para a esquerda), capturando um contexto mais rico.
+## Model Architectures
 
-Todos os modelos utilizaram uma camada de `Embedding` inicial e uma camada `Dense` final com ativação `softmax` para a classificação. Foram também aplicadas técnicas de regularização como `Dropout` para evitar o sobreajuste (*overfitting*).
+Four RNN models were trained and evaluated, all sharing a similar base architecture, with the recurrent layer being the only variation:
 
-## Resultados
+1.  **LSTM (Long Short-Term Memory):** Effective at learning long-term dependencies.
+2.  **GRU (Gated Recurrent Unit):** A simpler and more computationally efficient version of LSTM.
+3.  **SimpleRNN:** The most basic RNN architecture.
+4.  **Bidirectional LSTM:** Processes the text sequence in both directions (left-to-right and right-to-left), capturing a richer context.
 
-Após o treino por 15 épocas, os modelos apresentaram as seguintes acurácias no conjunto de teste:
+All models used an initial `Embedding` layer and a final `Dense` layer with a `softmax` activation for classification. Regularization techniques such as `Dropout` were also applied to prevent *overfitting*.
 
-| Modelo              | Acurácia no Teste |
-| ------------------- | :---------------: |
-| **LSTM Bidirecional** |    **73.24%** |
-| LSTM                |      72.02%       |
-| GRU                 |      72.00%       |
-| SimpleRNN           |      67.18%       |
+---
 
-A **LSTM Bidirecional** obteve o melhor desempenho, o que sugere que a análise do contexto em ambas as direções do texto foi benéfica para esta tarefa.
+## Results
 
-## Como Executar o Projeto
+After training for 15 epochs, the models yielded the following accuracies on the test set:
 
-1.  **Pré-requisitos:** Certifique-se de ter o Python 3 e as seguintes bibliotecas instaladas:
-    ```
+| Model | Test Accuracy |
+| :--- | :---: |
+| **Bidirectional LSTM** | **73.24%** |
+| LSTM | 72.02% |
+| GRU | 72.00% |
+| SimpleRNN | 67.18% |
+
+The **Bidirectional LSTM** achieved the best performance, which suggests that analyzing the context in both directions of the text was beneficial for this task.
+
+---
+
+## How to Run the Project
+
+1.  **Prerequisites:** Ensure you have Python 3 and the following libraries installed:
+    ```bash
     pandas
     numpy
     matplotlib
@@ -72,23 +82,25 @@ A **LSTM Bidirecional** obteve o melhor desempenho, o que sugere que a análise 
     tensorflow
     scikit-learn
     ```
-    Pode instalá-las com o comando:
+    You can install them with the command:
     `pip install pandas numpy matplotlib seaborn nltk tensorflow scikit-learn`
 
-2.  **Estrutura de Dados:**
-    * Coloque o ficheiro do notebook (`ProjetoFinal_ET287_v2.ipynb`) e o dataset (`sentiment-emotion-labelled_Dell_tweets.csv`) na mesma pasta.
+2.  **Data Structure:**
+    * Place the notebook file (`ProjetoFinal_ET287_v2.ipynb`) and the dataset (`sentiment-emotion-labelled_Dell_tweets.csv`) in the same folder.
 
-3.  **Execução:**
-    * Abra o notebook num ambiente como Jupyter Notebook ou Google Colab.
-    * Execute as células em ordem para reproduzir a análise e os resultados.
+3.  **Execution:**
+    * Open the notebook in an environment such as Jupyter Notebook or Google Colab.
+    * Execute the cells in order to reproduce the analysis and results.
 
-## Tecnologias Utilizadas
+---
 
-* **Linguagem:** Python 3
-* **Ambiente:** Jupyter Notebook / Google Colab
-* **Bibliotecas Principais:**
-    * TensorFlow (com Keras) para a construção dos modelos de deep learning.
-    * Scikit-learn para pré-processamento e métricas de avaliação.
-    * Pandas e NumPy para manipulação de dados.
-    * NLTK para processamento de texto (remoção de stopwords).
-    * Matplotlib e Seaborn para a visualização dos resultados.
+## Technologies Used
+
+* **Language:** Python 3
+* **Environment:** Jupyter Notebook / Google Colab
+* **Main Libraries:**
+    * TensorFlow (with Keras) for building the deep learning models.
+    * Scikit-learn for preprocessing and evaluation metrics.
+    * Pandas and NumPy for data manipulation.
+    * NLTK for text processing (stopwords removal).
+    * Matplotlib and Seaborn for visualizing the results.
